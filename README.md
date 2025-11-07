@@ -1,1 +1,1 @@
-# geue mit courage
+# geue-schulemitcourage
