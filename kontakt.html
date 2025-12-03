@@ -92,11 +92,33 @@
       </div>
     </section>
   </main>
-     <section id="kontakt" aria-labelledby="kontakt-h2">
+    <section id="kontakt" aria-labelledby="kontakt-h2">
   <h2 id="kontakt-h2">Kontakt / (anonyme) Meldung</h2>
 
-  <form action="https://formsubmit.co/teresa.tuncel@geue.nrw.schule" method="POST">
-    <!-- Optionen (empfohlen) -->
+  <!-- Info-Box Anonym -->
+  <div class="info-box">
+    <strong>ℹ️ Hinweis:</strong>  
+    Du kannst den Vorfall <strong>anonym melden</strong>.  
+    Wenn du keine Kontaktangaben machst, bleibt deine Meldung anonym. <p class="help-text">
+  Für eine Rückmeldung oder genauere Klärung brauchen wir eine Kontaktangabe.
+  Anonyme Meldungen können wir nicht beantworten.
+</p>
+    <br><br>
+    Die Meldung wird <strong>ausschließlich vom Beratungsteam</strong> eingesehen
+    und <strong>nicht dauerhaft gespeichert</strong>.  
+  </div>
+
+  <!-- Meldungsboxen -->
+  <div id="success-message" class="message message-success">
+    ✔ Danke! Deine Meldung wurde erfolgreich übermittelt.
+  </div>
+
+  <div id="error-message" class="message message-error">
+    ❌ Es gab ein Problem beim Absenden. Bitte versuche es später erneut.
+  </div>
+
+  <form id="kontakt-form" action="https://formsubmit.co/teresa.tuncel@gmail.com" method="POST">
+
     <input type="hidden" name="_subject" value="Neue Meldung über die Schul-Website">
     <input type="hidden" name="_template" value="table">
     <input type="hidden" name="_captcha" value="false">
@@ -104,19 +126,16 @@
     <div class="row">
       <div>
         <label for="name">Name (optional)</label>
-        <input id="name" name="name" autocomplete="name">
+        <input id="name" name="name" autocomplete="name" placeholder="Du kannst dieses Feld leer lassen">
       </div>
       <div>
         <label for="email">E-Mail (optional)</label>
-        <input id="email" name="email" type="email" autocomplete="email">
-
+        <input id="email" name="email" type="email" autocomplete="email"
+          placeholder="Nur ausfüllen, wenn du eine Rückmeldung möchtest">
       </div>
     </div>
-<section id="kontakt">
 
-  <form action="https://formsubmit.co/teresa.tuncel@geue.nrw.schule" method="POST">
-    
-       <div class="row">
+    <div class="row">
       <div>
         <label for="rolle">Ich bin *</label>
         <select id="rolle" name="rolle" required>
@@ -127,6 +146,7 @@
           <option>Sonstige*r</option>
         </select>
       </div>
+
       <div>
         <label for="kategorie">Kategorie *</label>
         <select id="kategorie" name="kategorie" required>
@@ -135,7 +155,7 @@
           <option>Sexismus</option>
           <option>Queerfeindlichkeit</option>
           <option>Antisemitismus</option>
-          <option>Mobbing/Hate Speech</option>
+          <option>Mobbing / Hate Speech</option>
           <option>Sonstiges</option>
         </select>
       </div>
@@ -143,17 +163,21 @@
 
     <div>
       <label for="beschreibung">Beschreibung des Vorfalls *</label>
-      <textarea id="beschreibung" name="beschreibung" rows="5" required></textarea>
+      <textarea id="beschreibung" name="beschreibung" rows="5" required
+        placeholder="Was ist passiert? Wer war beteiligt? Wo und wann ist es passiert?"></textarea>
     </div>
 
     <div>
       <label for="wuensche">Was wünschst du dir?</label>
       <textarea id="wuensche" name="wuensche" rows="3"
-        placeholder="z. B. Gespräch, Schutzmaßnahme, Information"></textarea>
+        placeholder="z. B. Gespräch, Schutzmaßnahme, Information, Unterstützung …"></textarea>
     </div>
-    <button type="submit">Absenden</button>
+
+    <button type="submit" id="kontakt-submit">Absenden</button>
   </form>
 </section>
+
+
  <footer>
   <p>© 2025 Gymnasium Essen-Überruhr · 
      <a href="impressum.html">Impressum</a> · 
@@ -161,8 +185,104 @@
   </p>
 </footer>
 
-  <script>
-    document.getElementById('year').textContent = new Date().getFullYear();
-  </script>
+ <script>
+document.addEventListener('DOMContentLoaded', function () {
+  const form = document.getElementById('kontakt-form');
+  const successBox = document.getElementById('success-message');
+  const errorBox = document.getElementById('error-message');
+  const submitBtn = document.getElementById('kontakt-submit');
+
+  if (form) {
+    form.addEventListener('submit', function (event) {
+      event.preventDefault();
+
+      // Buttons & Meldungen zurücksetzen
+      submitBtn.disabled = true;
+      const originalText = submitBtn.textContent;
+      submitBtn.textContent = 'Senden …';
+      successBox.classList.remove('show');
+      errorBox.classList.remove('show');
+
+      fetch(form.action, {
+        method: 'POST',
+        body: new FormData(form)
+      })
+      .then(function () {
+        // Erfolg: Formular ausblenden, Meldung anzeigen
+        form.classList.add('hidden');
+        successBox.classList.add('show');
+        errorBox.classList.remove('show');
+
+        // zum Beginn des Kontaktbereichs scrollen
+        document.getElementById('kontakt').scrollIntoView({ behavior: 'smooth' });
+
+        // Formular nach 10 Sekunden wieder anzeigen & zurücksetzen
+        setTimeout(function () {
+          form.reset();
+          form.classList.remove('hidden');
+          successBox.classList.remove('show');
+          submitBtn.disabled = false;
+          submitBtn.textContent = originalText;
+        }, 10000);
+      })
+      .catch(function () {
+        // Fehler: Fehlerbox anzeigen, Formular sichtbar lassen
+        errorBox.classList.add('show');
+        successBox.classList.remove('show');
+        submitBtn.disabled = false;
+        submitBtn.textContent = originalText;
+
+        document.getElementById('kontakt').scrollIntoView({ behavior: 'smooth' });
+      });
+    });
+  }
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  const form = document.getElementById('kontakt-form');
+  const successBox = document.getElementById('success-message');
+  const errorBox = document.getElementById('error-message');
+  const submitBtn = document.getElementById('kontakt-submit');
+
+  if (form) {
+    form.addEventListener('submit', function (event) {
+      event.preventDefault(); // Seite nicht verlassen
+
+      const originalText = submitBtn.textContent;
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Senden …';
+      successBox.classList.remove('show');
+      errorBox.classList.remove('show');
+
+      fetch(form.action, {
+        method: 'POST',
+        body: new FormData(form)
+      })
+      .then(function () {
+        form.reset();
+        submitBtn.disabled = false;
+        submitBtn.textContent = originalText;
+        successBox.classList.add('show');
+        errorBox.classList.remove('show');
+        document.getElementById('kontakt').scrollIntoView({ behavior: 'smooth' });
+      })
+      .catch(function () {
+        submitBtn.disabled = false;
+        submitBtn.textContent = originalText;
+        errorBox.classList.add('show');
+        successBox.classList.remove('show');
+        document.getElementById('kontakt').scrollIntoView({ behavior: 'smooth' });
+      });
+    });
+  }
+ // falls du mal ein Element mit id="year" nutzt:
+  const yearEl = document.getElementById('year');
+  if (yearEl) {
+    yearEl.textContent = new Date().getFullYear();
+  }
+});
+</script>
+
+
 </body>
 </html>
