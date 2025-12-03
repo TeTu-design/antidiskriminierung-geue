@@ -159,7 +159,6 @@
     <input type="hidden" name="_subject" value="Neue Meldung über die Schul-Website">
     <input type="hidden" name="_template" value="table">
     <input type="hidden" name="_captcha" value="false">
-    <input type="hidden" name="_next" value="https://tetu-design.github.io/geue-safespace/danke.html">
 
     <div class="row">
       <div>
@@ -275,13 +274,52 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   }
 
-  // Falls du irgendwo ein Element mit id="year" einbaust, hier wird es gesetzt
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  const form = document.getElementById('kontakt-form');
+  const successBox = document.getElementById('success-message');
+  const errorBox = document.getElementById('error-message');
+  const submitBtn = document.getElementById('kontakt-submit');
+
+  if (form) {
+    form.addEventListener('submit', function (event) {
+      event.preventDefault(); // Seite nicht verlassen
+
+      const originalText = submitBtn.textContent;
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Senden …';
+      successBox.classList.remove('show');
+      errorBox.classList.remove('show');
+
+      fetch(form.action, {
+        method: 'POST',
+        body: new FormData(form)
+      })
+      .then(function () {
+        form.reset();
+        submitBtn.disabled = false;
+        submitBtn.textContent = originalText;
+        successBox.classList.add('show');
+        errorBox.classList.remove('show');
+        document.getElementById('kontakt').scrollIntoView({ behavior: 'smooth' });
+      })
+      .catch(function () {
+        submitBtn.disabled = false;
+        submitBtn.textContent = originalText;
+        errorBox.classList.add('show');
+        successBox.classList.remove('show');
+        document.getElementById('kontakt').scrollIntoView({ behavior: 'smooth' });
+      });
+    });
+  }
+ // falls du mal ein Element mit id="year" nutzt:
   const yearEl = document.getElementById('year');
   if (yearEl) {
     yearEl.textContent = new Date().getFullYear();
   }
 });
 </script>
+
 
 </body>
 </html>
